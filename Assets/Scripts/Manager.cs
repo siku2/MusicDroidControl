@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using dia = System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,6 +50,7 @@ public class Manager : MonoBehaviour
 	WaitForSeconds volumeChangeDelay = new WaitForSeconds(.6f);
 	WaitForSeconds leftPadPressDelay = new WaitForSeconds(.3f);
 	SongInformation songInformation = new SongInformation();
+	dia.Stopwatch progressTimer = new dia.Stopwatch();
 	bool initializingDone;
 
 
@@ -99,7 +101,7 @@ public class Manager : MonoBehaviour
 			if(SocketClient.has_new_messages)
 			{
 				string message = SocketClient.GetLastMessage();
-				string[] elements = message.Split(new string[] {"=="}, StringSplitOptions.RemoveEmptyEntries);
+				string[] elements = message.Split(new string[] { "==" }, StringSplitOptions.RemoveEmptyEntries);
 				if(elements[1].StartsWith("INFORMATION")) //"xx==INFORMATION;AVICII;FOR A BETTER DAY;PLAYING;https://i.scdn.co/image/1e95e13d082e43c547dadd93808dceeb99f589cf;290;352;0.15" 
 				{
 					string oldUrl = songInformation.cover_url;
@@ -111,15 +113,12 @@ public class Manager : MonoBehaviour
 			
 		if(songInformation.progress < songInformation.duration)
 		{
-			if(songInformation.playing)
-			{
-				songInformation.progress += Time.deltaTime;
-			}
+			float realProgress = songInformation.progress + (float) (progressTimer.ElapsedMilliseconds / 1000);
 			if(songInformation.duration > 0)
 			{
-				progress_display.fillAmount = songInformation.progress / (float) songInformation.duration;
+				progress_display.fillAmount = realProgress / (float) songInformation.duration;
 			}
-			progress_text.text = string.Format("{0}:{1}", Mathf.Floor(songInformation.progress / 60).ToString("00"), Mathf.Floor(songInformation.progress % 60).ToString("00"));
+			progress_text.text = string.Format("{0}:{1}", Mathf.Floor(realProgress / 60).ToString("00"), Mathf.Floor(realProgress % 60).ToString("00"));
 		}
 	}
 
@@ -158,7 +157,7 @@ public class Manager : MonoBehaviour
 			if(SocketClient.has_new_messages)
 			{
 				string message = SocketClient.GetLastMessage();
-				string[] elements = message.Split(new string[] {"=="}, StringSplitOptions.RemoveEmptyEntries);
+				string[] elements = message.Split(new string[] { "==" }, StringSplitOptions.RemoveEmptyEntries);
 				if(elements[1].StartsWith("INFORMATION")) //"xx==INFORMATION;AVICII;FOR A BETTER DAY;PLAYING;https://i.scdn.co/image/1e95e13d082e43c547dadd93808dceeb99f589cf;290;352;0.15" 
 				{
 					if(UpdateSongInformation(elements[1].Substring(0, int.Parse(elements[0]))))
@@ -194,6 +193,15 @@ public class Manager : MonoBehaviour
 				songInformation.progress = float.Parse(elements[5]);
 				songInformation.duration = int.Parse(elements[6]);
 				songInformation.volume = float.Parse(elements[7]);
+				progressTimer.Reset();
+				if(songInformation.playing)
+				{
+					progressTimer.Start();
+				}
+				else
+				{
+					progressTimer.Stop();
+				}
 				return true;
 			}
 			catch
