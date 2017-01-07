@@ -4,6 +4,7 @@ using System;
 using dia = System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 
 
 public struct SongInformation
@@ -88,6 +89,7 @@ public class Manager : MonoBehaviour
 
 			initializingDone = true;
 			StartCoroutine(AliveCheck());
+			Analytics.CustomEvent("Connected");
 		}
 	}
 
@@ -123,6 +125,7 @@ public class Manager : MonoBehaviour
 
 	void OnApplicationQuit()
 	{
+		Analytics.CustomEvent("Application Quit");
 		SocketClient.Shutdown();
 	}
 
@@ -143,6 +146,7 @@ public class Manager : MonoBehaviour
 
 		if(needsReconnect)
 		{
+			Analytics.CustomEvent("Reconnecting through pinging...");
 			StartCoroutine(Start());
 		}
 	}
@@ -226,6 +230,7 @@ public class Manager : MonoBehaviour
 			catch
 			{
 				Debug.LogWarning("Malformatted information code: " + msg);
+				Analytics.CustomEvent("Received malformed data");
 				return false;
 			}
 		}
@@ -244,6 +249,7 @@ public class Manager : MonoBehaviour
 
 	public void RightPadPress()
 	{
+		Analytics.CustomEvent("Skipping", new Dictionary<string, object>() { { "song", songInformation.song_name }, { "artist", songInformation.artist } });
 		if(SocketClient.Send("COMMAND;" + serverId + ";SKIP") == SocketSendResponse.NOT_CONNECTED)
 		{
 			StartCoroutine(Start());
@@ -325,6 +331,7 @@ public class Manager : MonoBehaviour
 		if(volume_slider.value == vol)
 		{
 			Debug.Log("Sending new volume");
+			Analytics.CustomEvent("Changing Volume", new Dictionary<string, object>() { { "old volume", songInformation.volume }, { "new volume", vol } });
 			if(SocketClient.Send("COMMAND;" + serverId + ";VOLUMECHANGE;" + Math.Round(vol, 2).ToString()) == SocketSendResponse.NOT_CONNECTED)
 			{
 				StartCoroutine(Start());
