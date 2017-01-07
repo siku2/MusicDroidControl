@@ -60,9 +60,10 @@ public class Manager : MonoBehaviour
 
 	IEnumerator Start()
 	{
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
 		if(connect)
 		{
-			
 			loading_screen.gameObject.SetActive(true);
 			main_screen.gameObject.SetActive(false);
 			discord_logo.SetActive(true);
