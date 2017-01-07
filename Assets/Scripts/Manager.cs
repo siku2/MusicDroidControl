@@ -55,6 +55,7 @@ public class Manager : MonoBehaviour
 	SongInformation songInformation = new SongInformation();
 	dia.Stopwatch progressTimer = new dia.Stopwatch();
 	bool initializingDone;
+	float fillProgress;
 
 
 	IEnumerator Start()
@@ -116,7 +117,8 @@ public class Manager : MonoBehaviour
 			float realProgress = songInformation.progress + (float) (progressTimer.ElapsedMilliseconds / 1000);
 			if(songInformation.duration > 0)
 			{
-				progress_display.fillAmount = realProgress / (float) songInformation.duration;
+				progress_display.fillAmount = fillProgress / (float) songInformation.duration;
+				fillProgress += Time.deltaTime;
 			}
 			progress_text.text = string.Format("{0}:{1}", Mathf.Floor(realProgress / 60).ToString("00"), Mathf.Floor(realProgress % 60).ToString("00"));
 		}
@@ -217,6 +219,7 @@ public class Manager : MonoBehaviour
 				songInformation.duration = int.Parse(elements[6]);
 				songInformation.volume = float.Parse(elements[7]);
 				progressTimer.Reset();
+				fillProgress = songInformation.progress;
 				if(songInformation.playing)
 				{
 					progressTimer.Start();
