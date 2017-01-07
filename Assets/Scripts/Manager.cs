@@ -32,6 +32,7 @@ public class Manager : MonoBehaviour
 	[Header("Control")]
 	[SerializeField] Image play_button;
 	[SerializeField] Image skip_button;
+	[SerializeField] Text volume_value;
 	[SerializeField] Slider volume_slider;
 	[Space(10)]
 	[SerializeField] Sprite play_pressed;
@@ -49,14 +50,10 @@ public class Manager : MonoBehaviour
 	WaitForSeconds checkAnswerInterval = new WaitForSeconds(2);
 	WaitForSeconds volumeChangeDelay = new WaitForSeconds(.6f);
 	WaitForSeconds leftPadPressDelay = new WaitForSeconds(.3f);
+	WaitForSeconds pingInterval = new WaitForSeconds(10);
 	SongInformation songInformation = new SongInformation();
 	dia.Stopwatch progressTimer = new dia.Stopwatch();
 	bool initializingDone;
-
-
-	void Awake()
-	{
-	}
 
 
 	IEnumerator Start()
@@ -90,6 +87,7 @@ public class Manager : MonoBehaviour
 			main_screen.gameObject.SetActive(true);
 
 			initializingDone = true;
+			StartCoroutine(AliveCheck());
 		}
 	}
 
@@ -126,6 +124,27 @@ public class Manager : MonoBehaviour
 	void OnApplicationQuit()
 	{
 		SocketClient.Shutdown();
+	}
+
+
+	IEnumerator AliveCheck()
+	{
+		bool needsReconnect = false;
+
+		while(true)
+		{
+			yield return pingInterval;
+			if(SocketClient.Send("ping") != SocketSendResponse.SUCCESSFUL)
+			{
+				needsReconnect = true;
+				break;
+			}
+		}
+
+		if(needsReconnect)
+		{
+			StartCoroutine(Start());
+		}
 	}
 
 
@@ -291,6 +310,7 @@ public class Manager : MonoBehaviour
 
 	public void OnVolumeChange()
 	{
+		volume_value.text = String.Format("{0}%", Mathf.RoundToInt(volume_slider.value * 100));
 		if(volume_slider.value != songInformation.volume)
 		{
 			StartCoroutine(ChangeVolume(volume_slider.value));
