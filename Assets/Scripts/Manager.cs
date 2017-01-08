@@ -15,6 +15,8 @@ public struct SongInformation
 	public float progress;
 	public string cover_url;
 	public bool playing;
+	public bool inChannel;
+	public bool noEntry;
 	public float volume;
 }
 
@@ -25,6 +27,7 @@ public class Manager : MonoBehaviour
 	[SerializeField] Transform loading_screen;
 	[SerializeField] Transform main_screen;
 	[SerializeField] GameObject discord_logo;
+	[SerializeField] GameObject noPlayerChannel;
 	[SerializeField] Animator general_anim;
 	[SerializeField] Image song_display;
 	[SerializeField] Image progress_display;
@@ -43,6 +46,8 @@ public class Manager : MonoBehaviour
 	[Space(10)]
 	[SerializeField] Sprite skip_pressed;
 	[SerializeField] Sprite skip_normal;
+	[Header("Covers")]
+	[SerializeField] Sprite genericCover;
 	[Header("Debug")]
 	[SerializeField] string serverId;
 	[SerializeField] bool connect;
@@ -65,6 +70,7 @@ public class Manager : MonoBehaviour
 		{
 			loading_screen.gameObject.SetActive(true);
 			main_screen.gameObject.SetActive(false);
+			noPlayerChannel.SetActive(false);
 			discord_logo.SetActive(true);
 
 			initializingDone = false;
@@ -155,6 +161,8 @@ public class Manager : MonoBehaviour
 
 	IEnumerator UpdateInterface(bool downloadCover = true)
 	{
+		noPlayerChannel.SetActive(!songInformation.inChannel);
+
 		song_text.text = songInformation.artist + "\n" + songInformation.song_name;
 		volume_slider.value = songInformation.volume;
 		if(songInformation.playing)
@@ -168,7 +176,14 @@ public class Manager : MonoBehaviour
 
 		if(downloadCover)
 		{
-			yield return StartCoroutine(DisplayCover(songInformation.cover_url));
+			if(songInformation.noEntry)
+			{
+				song_display.sprite = genericCover;
+			}
+			else
+			{
+				yield return StartCoroutine(DisplayCover(songInformation.cover_url));
+			}
 		}
 	}
 
@@ -213,6 +228,8 @@ public class Manager : MonoBehaviour
 				songInformation.artist = elements[1];
 				songInformation.song_name = elements[2];
 				songInformation.playing = elements[3] == "PLAYING";
+				songInformation.inChannel = elements[3] != "UNCONNECTED";
+				songInformation.noEntry = elements[3] == "STOPPED";
 				songInformation.cover_url = elements[4];
 				songInformation.progress = float.Parse(elements[5]);
 				songInformation.duration = int.Parse(elements[6]);
@@ -244,7 +261,15 @@ public class Manager : MonoBehaviour
 	{
 		WWW www = new WWW(url);
 		yield return www;
-		song_display.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+
+		try
+		{
+			song_display.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+		}
+		catch
+		{
+			song_display.sprite = genericCover;
+		}
 	}
 
 
@@ -337,6 +362,15 @@ public class Manager : MonoBehaviour
 			{
 				StartCoroutine(Start());
 			}
+		}
+	}
+
+
+	public void OnSummonPress()
+	{
+		if(SocketClient.Send("COMMAND;" + serverId + ";SUMMON") == SocketSendResponse.NOT_CONNECTED)
+		{
+			StartCoroutine(Start());
 		}
 	}
 }
