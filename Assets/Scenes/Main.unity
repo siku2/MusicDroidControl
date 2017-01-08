@@ -801,11 +801,11 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 2
+  m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.6862745, g: 0.6862745, b: 0.6862745, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1984,7 +1984,7 @@ MonoBehaviour:
   pause_normal: {fileID: 21300002, guid: b54c93263c038da4f92408ef4ccd5df9, type: 3}
   skip_pressed: {fileID: 21300014, guid: b54c93263c038da4f92408ef4ccd5df9, type: 3}
   skip_normal: {fileID: 21300006, guid: b54c93263c038da4f92408ef4ccd5df9, type: 3}
-  genericCover: {fileID: 21300000, guid: eb3ebdc5e83c7024baa66186c47dd9d2, type: 3}
+  genericCover: {fileID: 21300000, guid: 595abed7c004064478d9e63f37ac330a, type: 3}
   serverId: 203304535949574154
   connect: 1
 --- !u!4 &1562026190
@@ -2051,7 +2051,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1731233554
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2331,7 +2331,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1937009820
 RectTransform:
   m_ObjectHideFlags: 0

@@ -154,6 +154,7 @@ public class Manager : MonoBehaviour
 		if(needsReconnect)
 		{
 			Analytics.CustomEvent("Reconnecting through pinging...");
+			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
 		}
 	}
@@ -278,6 +279,7 @@ public class Manager : MonoBehaviour
 		Analytics.CustomEvent("Skipping", new Dictionary<string, object>() { { "song", songInformation.song_name }, { "artist", songInformation.artist } });
 		if(SocketClient.Send("COMMAND;" + serverId + ";SKIP") == SocketSendResponse.NOT_CONNECTED)
 		{
+			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
 		}
 	}
@@ -299,6 +301,7 @@ public class Manager : MonoBehaviour
 	{
 		if(SocketClient.Send("COMMAND;" + serverId + ";PLAY_PAUSE") == SocketSendResponse.NOT_CONNECTED)
 		{
+			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
 			return;
 		}
@@ -360,6 +363,7 @@ public class Manager : MonoBehaviour
 			Analytics.CustomEvent("Changing Volume", new Dictionary<string, object>() { { "old volume", songInformation.volume }, { "new volume", vol } });
 			if(SocketClient.Send("COMMAND;" + serverId + ";VOLUMECHANGE;" + Math.Round(vol, 2).ToString()) == SocketSendResponse.NOT_CONNECTED)
 			{
+				general_anim.SetTrigger("switch_to_loading");
 				StartCoroutine(Start());
 			}
 		}
@@ -370,6 +374,7 @@ public class Manager : MonoBehaviour
 	{
 		if(SocketClient.Send("COMMAND;" + serverId + ";SUMMON") == SocketSendResponse.NOT_CONNECTED)
 		{
+			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
 		}
 	}
