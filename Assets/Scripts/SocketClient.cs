@@ -44,7 +44,7 @@ public static class SocketClient
 		initializing = true;
 		sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-		IPAddress send_to_address = IPAddress.Parse(/*"35.165.215.126"*/"127.0.0.1");
+		IPAddress send_to_address = IPAddress.Parse("35.165.215.126"/*"127.0.0.1"*/);
 		IPEndPoint sending_end_point = new IPEndPoint(send_to_address, 5005);
 
 		socketStatus = SocketStatus.CONNECTING;
