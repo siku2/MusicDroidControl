@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using dia = System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,9 +29,12 @@ public class Manager : MonoBehaviour
 	[SerializeField] Transform main_screen;
 	[SerializeField] GameObject discord_logo;
 	[SerializeField] GameObject noPlayerChannel;
+	[SerializeField] GameObject registerScreen;
 	[SerializeField] Animator general_anim;
 	[SerializeField] Image song_display;
 	[SerializeField] Image progress_display;
+	[SerializeField] Text tokenDisplay;
+	[SerializeField] Text tokenDescription;
 	[SerializeField] Text progress_text;
 	[SerializeField] Text song_text;
 	[Header("Control")]
@@ -49,9 +53,11 @@ public class Manager : MonoBehaviour
 	[Header("Covers")]
 	[SerializeField] Sprite genericCover;
 	[Header("Debug")]
-	[SerializeField] string serverId;
 	[SerializeField] bool connect;
+	[SerializeField] bool clearPerfs;
 
+	Dictionary<string, string[]> alphabet_ruler = new Dictionary<string, string[]> { { "a", new string[] { "b", "c", "d", "e", "f", "g", "h", "i", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "v", "w", "x", "z" } }, { "b", new string[] { "a", "e", "i", "o", "u" } }, { "c", new string[] { "a", "e", "h", "i", "k", "o", "u" } }, { "d", new string[] { "a", "e", "i", "o", "u" } }, { "e", new string[] { "a", "b", "d", "f", "g", "h", "i", "k", "l", "m", "n", "p", "r", "s", "t", "u", "v", "x", "z" } }, { "f", new string[] { "a", "e", "i", "o", "u" } }, { "g", new string[] { "a", "e", "i", "o", "u" } }, { "h", new string[] { "a", "e", "i", "o", "u" } }, { "i", new string[] { "b", "d", "f", "g", "h", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "w", "z" } }, { "k", new string[] { "a", "e", "i", "l", "o", "u" } }, { "l", new string[] { "a", "e", "i", "o", "u" } }, { "m", new string[] { "a", "e", "i", "o", "u" } }, { "n", new string[] { "a", "e", "i", "o", "u" } }, { "o", new string[] { "b", "c", "d", "f", "g", "h", "i", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "x", "z" } }, { "p", new string[] { "a", "e", "i", "l", "n", "o", "r", "s", "u" } }, { "r", new string[] { "a", "e", "i", "o", "u" } }, { "s", new string[] { "a", "c", "e", "h", "i", "l", "n", "o", "r", "t", "u", "w" } }, { "t", new string[] { "a", "e", "i", "o", "r", "u", "w" } }, { "u", new string[] { "b", "c", "d", "f", "g", "h", "i", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "x", "z" } }, { "v", new string[] { "a", "e", "i", "o", "u" } }, { "w", new string[] { "a", "e", "i", "o", "u" } }, { "x", new string[] { "a", "e", "i", "o", "u" } }, { "z", new string[] { "a", "e", "i", "o", "u" } } };
+	System.Random rnd;
 	WaitForSeconds connectionInterval = new WaitForSeconds(3);
 	WaitForSeconds checkAnswerInterval = new WaitForSeconds(2);
 	WaitForSeconds volumeChangeDelay = new WaitForSeconds(.6f);
@@ -59,18 +65,27 @@ public class Manager : MonoBehaviour
 	WaitForSeconds pingInterval = new WaitForSeconds(10);
 	SongInformation songInformation = new SongInformation();
 	dia.Stopwatch progressTimer = new dia.Stopwatch();
+	string serverID;
+	string authorID;
 	bool initializingDone;
 
 
 	IEnumerator Start()
 	{
 		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+		rnd = new System.Random();
+
+		if(clearPerfs)
+		{
+			PlayerPrefs.DeleteAll();
+		}
 
 		if(connect)
 		{
 			loading_screen.gameObject.SetActive(true);
 			main_screen.gameObject.SetActive(false);
 			noPlayerChannel.SetActive(false);
+			registerScreen.SetActive(false);
 			discord_logo.SetActive(true);
 
 			initializingDone = false;
@@ -85,6 +100,28 @@ public class Manager : MonoBehaviour
 			{
 				Debug.LogError("Couldn't connect");
 			}
+
+			if(PlayerPrefs.HasKey("user_id") && PlayerPrefs.HasKey("server_id"))
+			{
+				serverID = PlayerPrefs.GetString("server_id");
+				authorID = PlayerPrefs.GetString("user_id");
+			}
+			else
+			{
+				string token = GenerateToken(6).ToUpper();
+				discord_logo.SetActive(false);
+				registerScreen.SetActive(true);
+				tokenDisplay.text = token;
+				tokenDescription.text = String.Format(tokenDescription.text, token);
+				yield return StartCoroutine(RequestIdentity(token));
+				PlayerPrefs.SetString("user_id", authorID);
+				PlayerPrefs.SetString("server_id", serverID);
+				PlayerPrefs.Save();
+
+				registerScreen.SetActive(false);
+				discord_logo.SetActive(true);
+			}
+
 
 			general_anim.SetTrigger("loading_done");
 			yield return StartCoroutine(RequestInformation());
@@ -189,9 +226,39 @@ public class Manager : MonoBehaviour
 	}
 
 
+	IEnumerator RequestIdentity(string token)
+	{
+		SocketClient.Send("REQUEST;USER_IDENTIFICATION;" + token);
+		while(true)
+		{
+			if(SocketClient.has_new_messages)
+			{
+				string message = SocketClient.GetLastMessage();
+//				print(message);
+				string[] elements = message.Split(new string[] { "==" }, StringSplitOptions.RemoveEmptyEntries);
+				if(elements[1].StartsWith("USERINFORMATION")) //"xx==USERINFORMATION;203304535949574154;203302899277627392" 
+				{
+					if(UpdateUserInformation(elements[1].Substring(0, int.Parse(elements[0]))))
+					{
+						break;
+					}
+				}
+
+			}
+			else
+			{
+				Debug.Log("waiting for user information!");
+				yield return checkAnswerInterval;
+			}
+		}
+
+		Debug.Log("MusicBot sent user-data");
+	}
+
+
 	IEnumerator RequestInformation()
 	{
-		SocketClient.Send("REQUEST;" + serverId + ";SEND_INFORMATION");
+		SocketClient.Send("REQUEST;" + serverID + ";" + authorID + ";SEND_INFORMATION");
 		while(true)
 		{
 			if(SocketClient.has_new_messages)
@@ -258,6 +325,44 @@ public class Manager : MonoBehaviour
 	}
 
 
+	bool UpdateUserInformation(string msg)
+	{
+
+		string[] elements = msg.Split(new char[] { ';' });
+		if(elements[0] == "USERINFORMATION")
+		{
+			try
+			{
+				serverID = elements[1];
+				authorID = elements[2];
+				return true;
+			}
+			catch
+			{
+				Debug.LogWarning("Malformatted userdata code: " + msg);
+				Analytics.CustomEvent("Received malformed userdata");
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+
+	string GenerateToken(int length)
+	{
+		string token = alphabet_ruler.ElementAt(rnd.Next(alphabet_ruler.Count)).Key;
+		string returnString = "";
+		for(int i = 0; i < length; i++)
+		{
+			returnString += token;
+			token = alphabet_ruler[token][rnd.Next(alphabet_ruler[token].Length)];
+		}
+
+		return returnString;
+	}
+
+
 	IEnumerator DisplayCover(string url)
 	{
 		WWW www = new WWW(url);
@@ -277,7 +382,7 @@ public class Manager : MonoBehaviour
 	public void RightPadPress()
 	{
 		Analytics.CustomEvent("Skipping", new Dictionary<string, object>() { { "song", songInformation.song_name }, { "artist", songInformation.artist } });
-		if(SocketClient.Send("COMMAND;" + serverId + ";SKIP") == SocketSendResponse.NOT_CONNECTED)
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";SKIP") == SocketSendResponse.NOT_CONNECTED)
 		{
 			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
@@ -299,7 +404,7 @@ public class Manager : MonoBehaviour
 
 	public void LeftPadPress()
 	{
-		if(SocketClient.Send("COMMAND;" + serverId + ";PLAY_PAUSE") == SocketSendResponse.NOT_CONNECTED)
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";PLAY_PAUSE") == SocketSendResponse.NOT_CONNECTED)
 		{
 			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
@@ -361,7 +466,7 @@ public class Manager : MonoBehaviour
 		{
 			Debug.Log("Sending new volume");
 			Analytics.CustomEvent("Changing Volume", new Dictionary<string, object>() { { "old volume", songInformation.volume }, { "new volume", vol } });
-			if(SocketClient.Send("COMMAND;" + serverId + ";VOLUMECHANGE;" + Math.Round(vol, 2).ToString()) == SocketSendResponse.NOT_CONNECTED)
+			if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";VOLUMECHANGE;" + Math.Round(vol, 2).ToString()) == SocketSendResponse.NOT_CONNECTED)
 			{
 				general_anim.SetTrigger("switch_to_loading");
 				StartCoroutine(Start());
@@ -372,7 +477,7 @@ public class Manager : MonoBehaviour
 
 	public void OnSummonPress()
 	{
-		if(SocketClient.Send("COMMAND;" + serverId + ";SUMMON") == SocketSendResponse.NOT_CONNECTED)
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";SUMMON") == SocketSendResponse.NOT_CONNECTED)
 		{
 			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
