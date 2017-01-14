@@ -1,17 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System;
 using System.Linq;
-using dia = System.Diagnostics;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Analytics;
+using UnityEngine.UI;
+using dia = System.Diagnostics;
 
 
 public struct SongInformation
 {
 	public string artist;
 	public string song_name;
+	public string videoID;
 	public int duration;
 	public float progress;
 	public string cover_url;
@@ -25,6 +26,7 @@ public struct SongInformation
 
 public class Manager : MonoBehaviour
 {
+	[SerializeField] Youtube youtube;
 	[SerializeField] Transform loading_screen;
 	[SerializeField] Transform main_screen;
 	[SerializeField] GameObject discord_logo;
@@ -62,7 +64,7 @@ public class Manager : MonoBehaviour
 	WaitForSeconds checkAnswerInterval = new WaitForSeconds(2);
 	WaitForSeconds volumeChangeDelay = new WaitForSeconds(.6f);
 	WaitForSeconds leftPadPressDelay = new WaitForSeconds(.3f);
-	WaitForSeconds pingInterval = new WaitForSeconds(10);
+	WaitForSeconds pingInterval = new WaitForSeconds(5);
 	SongInformation songInformation = new SongInformation();
 	dia.Stopwatch progressTimer = new dia.Stopwatch();
 	string serverID;
@@ -295,13 +297,22 @@ public class Manager : MonoBehaviour
 			{
 				songInformation.artist = elements[1];
 				songInformation.song_name = elements[2];
-				songInformation.playing = elements[3] == "PLAYING";
-				songInformation.inChannel = elements[3] != "UNCONNECTED";
-				songInformation.noEntry = elements[3] == "STOPPED";
-				songInformation.cover_url = elements[4];
-				songInformation.progress = float.Parse(elements[5]);
-				songInformation.duration = int.Parse(elements[6]);
-				songInformation.volume = float.Parse(elements[7]);
+
+				string oldVideoID = songInformation.videoID;
+				songInformation.videoID = elements[3];
+
+				if(oldVideoID != null && oldVideoID != songInformation.videoID)
+				{
+					youtube.AddVideoToHistory(oldVideoID);
+				}
+
+				songInformation.playing = elements[4] == "PLAYING";
+				songInformation.inChannel = elements[4] != "UNCONNECTED";
+				songInformation.noEntry = elements[4] == "STOPPED";
+				songInformation.cover_url = elements[5];
+				songInformation.progress = float.Parse(elements[6]);
+				songInformation.duration = int.Parse(elements[7]);
+				songInformation.volume = float.Parse(elements[8]);
 				progressTimer.Reset();
 				if(songInformation.playing)
 				{
@@ -381,8 +392,19 @@ public class Manager : MonoBehaviour
 
 	public void VideoPlayCommand(YoutubeVideoObject vid)
 	{
-		Analytics.CustomEvent("Playing", new Dictionary<string, object>() { { "name", vid.name }, { "channel", vid.channel }, { "url", vid.videoUrl } });
-		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";PLAY;" + vid.videoUrl) == SocketSendResponse.NOT_CONNECTED)
+		Analytics.CustomEvent("Playing", new Dictionary<string, object>() { { "name", vid.name }, { "channel", vid.channel }, { "id", vid.videoID } });
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";PLAY;" + "https://www.youtube.com/watch?v=" + vid.videoID) == SocketSendResponse.NOT_CONNECTED)
+		{
+			general_anim.SetTrigger("switch_to_loading");
+			StartCoroutine(Start());
+		}
+	}
+
+
+	public void PlaylistPlayCommand(YoutubePlaylistObject pl)
+	{
+		Analytics.CustomEvent("Playing Playlist", new Dictionary<string, object>() { { "name", pl.name }, { "channel", pl.channel }, { "id", pl.playlistID } });
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";PLAY;" + "https://www.youtube.com/playlist?list=" + pl.playlistID) == SocketSendResponse.NOT_CONNECTED)
 		{
 			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());

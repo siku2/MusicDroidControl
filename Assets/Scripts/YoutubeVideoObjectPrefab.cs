@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 public class YoutubeVideoObjectPrefab : MonoBehaviour, IPointerUpHandler, IDragHandler, IPointerDownHandler
@@ -10,10 +11,12 @@ public class YoutubeVideoObjectPrefab : MonoBehaviour, IPointerUpHandler, IDragH
 	[SerializeField] Youtube youtube;
 	[SerializeField] Image thumbnailDisplay;
 	[SerializeField] Text videoTitle;
-	[SerializeField] Text description;
+	[SerializeField] Text channel;
+	[SerializeField] Text duration;
 	[SerializeField] float scrollThreshold;
 
 	YoutubeVideoObject video;
+	YoutubePlaylistObject playlist;
 	Vector2 startPos;
 
 
@@ -23,12 +26,44 @@ public class YoutubeVideoObjectPrefab : MonoBehaviour, IPointerUpHandler, IDragH
 		yield return www;
 
 		transform.name = vid.name;
+		gameObject.SetActive(true);
 
 		this.youtube = yt;
 		this.video = vid;
+		this.playlist = null;
 		this.thumbnailDisplay.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
 		this.videoTitle.text = vid.name;
-		this.description.text = vid.description;
+		this.channel.text = vid.channel;
+
+		TimeSpan t = TimeSpan.FromSeconds(vid.duration);
+		string ans = "";
+		if(t.Hours > 0)
+		{
+			ans = string.Format("{0}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds);
+		}
+		else
+		{
+			ans = string.Format("{0}:{1:D2}",t.Minutes, t.Seconds);
+		}
+		this.duration.text = ans;
+	}
+
+
+	public IEnumerator Setup(Youtube yt, YoutubePlaylistObject pl)
+	{
+		WWW www = new WWW(pl.thumbnailURL);
+		yield return www;
+
+		transform.name = pl.name;
+		gameObject.SetActive(true);
+
+		this.youtube = yt;
+		this.video = null;
+		this.playlist = pl;
+		this.thumbnailDisplay.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+		this.videoTitle.text = pl.name;
+		this.channel.text = pl.channel;
+		this.duration.text = "PLAYLIST";
 	}
 
 
@@ -42,7 +77,15 @@ public class YoutubeVideoObjectPrefab : MonoBehaviour, IPointerUpHandler, IDragH
 		else
 		{
 //			print("this is a click");
-			youtube.PlayVideo(video);
+			if(video != null)
+			{
+				youtube.PlayVideo(video);
+			}
+			else
+			if(playlist != null)
+			{
+				youtube.PlayPlaylist(playlist);
+			}
 		}
 	}
 
