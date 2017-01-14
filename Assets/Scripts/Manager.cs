@@ -379,6 +379,17 @@ public class Manager : MonoBehaviour
 	}
 
 
+	public void VideoPlayCommand(YoutubeVideoObject vid)
+	{
+		Analytics.CustomEvent("Playing", new Dictionary<string, object>() { { "name", vid.name }, { "channel", vid.channel }, { "url", vid.videoUrl } });
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";PLAY;" + vid.videoUrl) == SocketSendResponse.NOT_CONNECTED)
+		{
+			general_anim.SetTrigger("switch_to_loading");
+			StartCoroutine(Start());
+		}
+	}
+
+
 	public void RightPadPress()
 	{
 		Analytics.CustomEvent("Skipping", new Dictionary<string, object>() { { "song", songInformation.song_name }, { "artist", songInformation.artist } });
