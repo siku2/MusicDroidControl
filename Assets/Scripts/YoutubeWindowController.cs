@@ -13,7 +13,7 @@ public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHand
 	[SerializeField] float closePercentage;
 	[SerializeField] float speed;
 
-	bool open = true;
+	bool open;
 	bool blocking;
 
 
@@ -39,15 +39,10 @@ public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHand
 	}
 
 
-	public void Open()
-	{
-		open = true;
-	}
-
-
 	public void OnBeginDrag(PointerEventData data)
 	{
 		blocking = true;
+		window.gameObject.SetActive(true);
 	}
 
 

@@ -33,7 +33,7 @@ public class YoutubeVideoObjectPrefab : MonoBehaviour, IPointerUpHandler, IDragH
 		this.playlist = null;
 		this.thumbnailDisplay.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
 		this.videoTitle.text = vid.name;
-		this.channel.text = vid.channel;
+		this.channel.text = "by " + vid.channel;
 
 		TimeSpan t = TimeSpan.FromSeconds(vid.duration);
 		string ans = "";
@@ -43,7 +43,7 @@ public class YoutubeVideoObjectPrefab : MonoBehaviour, IPointerUpHandler, IDragH
 		}
 		else
 		{
-			ans = string.Format("{0}:{1:D2}",t.Minutes, t.Seconds);
+			ans = string.Format("{0}:{1:D2}", t.Minutes, t.Seconds);
 		}
 		this.duration.text = ans;
 	}
@@ -62,7 +62,7 @@ public class YoutubeVideoObjectPrefab : MonoBehaviour, IPointerUpHandler, IDragH
 		this.playlist = pl;
 		this.thumbnailDisplay.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
 		this.videoTitle.text = pl.name;
-		this.channel.text = pl.channel;
+		this.channel.text = "by " + pl.channel;
 		this.duration.text = "PLAYLIST";
 	}
 

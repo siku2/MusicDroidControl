@@ -112,7 +112,6 @@ public class Youtube : MonoBehaviour
 	public YoutubeScrollHandler scrollHandler;
 
 	[SerializeField] Manager manager;
-	[SerializeField] RectTransform youtubeRect;
 	[SerializeField] Transform ytPrefabParent;
 	[SerializeField] InputField searchField;
 	[SerializeField] YoutubeVideoObjectPrefab[] ytPrefabs;
@@ -211,7 +210,14 @@ public class Youtube : MonoBehaviour
 		IList<Coroutine> coroutines = new List<Coroutine>();
 		for(int i = 0; i < searchResults; i++)
 		{
-			coroutines.Add(StartCoroutine(ytPrefabs[i].Setup(this, youtubeObjects[i])));
+			if(i >= youtubeObjects.Count)
+			{
+				ytPrefabs[i].gameObject.SetActive(false);
+			}
+			else
+			{
+				coroutines.Add(StartCoroutine(ytPrefabs[i].Setup(this, youtubeObjects[i])));
+			}
 		}
 
 		foreach(Coroutine c in coroutines)
@@ -301,7 +307,10 @@ public class Youtube : MonoBehaviour
 			videos.Add((YoutubeVideoObject) cd.result);
 		}
 
-		StartCoroutine(DisplayVideos(videos));
+		if(videos.Count > 0)
+		{
+			StartCoroutine(DisplayVideos(videos));
+		}
 	}
 
 
@@ -411,7 +420,7 @@ public class Youtube : MonoBehaviour
 
 	public void AddVideoToHistory(string videoID)
 	{
-		history.Add(videoID);
+		history.Insert(0, videoID);
 		if(focus == Focus.HISTORY)
 		{
 			StartCoroutine(ShowHistory());
@@ -425,7 +434,7 @@ public class Youtube : MonoBehaviour
 	}
 
 
-	void Start()
+	public void Init()
 	{
 		StartCoroutine(ShowTrending());
 	}
