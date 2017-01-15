@@ -114,15 +114,16 @@ public class Youtube : MonoBehaviour
 	[SerializeField] Manager manager;
 	[SerializeField] Transform ytPrefabParent;
 	[SerializeField] InputField searchField;
-	[SerializeField] YoutubeVideoObjectPrefab[] ytPrefabs;
+	[SerializeField] YoutubeVideoObjectPrefab ytPrefab;
 	[SerializeField] Text currentSearchModeDisplay;
 	[SerializeField] string apiKey;
 	[SerializeField] string regionCode;
+	[SerializeField] int searchResults;
 
 	SearchMode searchMode = SearchMode.VIDEOS;
 	Focus focus = Focus.TRENDING;
 	List<string> history = new List<string>();
-	int searchResults;
+	List<YoutubeVideoObjectPrefab> existingPrefabs = new List<YoutubeVideoObjectPrefab>();
 
 
 	IEnumerator ParseJson(string json)
@@ -130,6 +131,7 @@ public class Youtube : MonoBehaviour
 		JObject result = JObject.Parse(json);
 		IList<JToken> videosFound = result["items"].Children().ToList();
 		IList<YoutubeVideoObject> videos = new List<YoutubeVideoObject>();
+		IList<CoroutineWithData> cds = new List<CoroutineWithData>();
 		foreach(JToken video in videosFound)
 		{
 			JToken data = video["snippet"];
@@ -137,23 +139,35 @@ public class Youtube : MonoBehaviour
 			string channel = data["channelTitle"].ToString();
 			string desc = data["description"].ToString();
 			string videoID = video["id"]["videoId"].ToString();
-			WWW www = new WWW("https://www.googleapis.com/youtube/v3/videos?part=statistics%2C+contentDetails&id=" + videoID + "&key=" + apiKey);
-			yield return www;
-			JObject info = JObject.Parse(www.text);
-			JToken videoInfo = info["items"].Children().ToList()[0];
-			float duration = (float) XmlConvert.ToTimeSpan(videoInfo["contentDetails"]["duration"].ToString()).TotalSeconds;
-			JToken stats = videoInfo["statistics"];
-			int views = int.Parse(stats["viewCount"].ToString());
-			int likes = int.Parse(stats["likeCount"].ToString());
-			int dislikes = int.Parse(stats["dislikeCount"].ToString());
-			int comments = int.Parse(stats["commentCount"].ToString());
-
-
 			string thumbnailUrl = data["thumbnails"]["default"]["url"].ToString();
-			videos.Add(new YoutubeVideoObject(title, channel, desc, videoID, thumbnailUrl, views, duration, likes, dislikes, comments));
+
+			cds.Add(new CoroutineWithData(this, FinishParsing(videoID, title, channel, desc, thumbnailUrl)));
+		}
+
+		foreach(CoroutineWithData cd in cds)
+		{
+			yield return cd.coroutine;
+			videos.Add(cd.result as YoutubeVideoObject);
 		}
 
 		yield return videos;
+	}
+
+
+	IEnumerator FinishParsing(string vidID, string name, string channel, string desc, string thumbnailUrl)
+	{
+		WWW www = new WWW("https://www.googleapis.com/youtube/v3/videos?part=statistics%2C+contentDetails&id=" + vidID + "&key=" + apiKey);
+		yield return www;
+		JObject info = JObject.Parse(www.text);
+		JToken videoInfo = info["items"].Children().ToList()[0];
+		float duration = (float) XmlConvert.ToTimeSpan(videoInfo["contentDetails"]["duration"].ToString()).TotalSeconds;
+		JToken stats = videoInfo["statistics"];
+		int views = int.Parse(stats["viewCount"].ToString());
+		int likes = int.Parse(stats["likeCount"].ToString());
+		int dislikes = int.Parse(stats["dislikeCount"].ToString());
+		int comments = int.Parse(stats["commentCount"].ToString());
+
+		yield return new YoutubeVideoObject(name, channel, desc, vidID, thumbnailUrl, views, duration, likes, dislikes, comments);
 	}
 
 
@@ -205,18 +219,34 @@ public class Youtube : MonoBehaviour
 	}
 
 
+	void GenerateVideoObjects(int videoObjectsNeeded)
+	{
+		if(videoObjectsNeeded > existingPrefabs.Count)
+		{
+			int diff = videoObjectsNeeded - existingPrefabs.Count;
+			for(int i = 0; i < diff; i++)
+			{
+				existingPrefabs.Add(Instantiate(ytPrefab, ytPrefabParent, false) as YoutubeVideoObjectPrefab);
+			}
+		}
+	}
+
+
+
 	IEnumerator DisplayVideos(IList<YoutubeVideoObject> youtubeObjects)
 	{
+		GenerateVideoObjects(youtubeObjects.Count);
+
 		IList<Coroutine> coroutines = new List<Coroutine>();
-		for(int i = 0; i < searchResults; i++)
+		for(int i = 0; i < existingPrefabs.Count; i++)
 		{
 			if(i >= youtubeObjects.Count)
 			{
-				ytPrefabs[i].gameObject.SetActive(false);
+				existingPrefabs[i].gameObject.SetActive(false);
 			}
 			else
 			{
-				coroutines.Add(StartCoroutine(ytPrefabs[i].Setup(this, youtubeObjects[i])));
+				coroutines.Add(StartCoroutine(existingPrefabs[i].Setup(this, youtubeObjects[i])));
 			}
 		}
 
@@ -229,10 +259,17 @@ public class Youtube : MonoBehaviour
 
 	IEnumerator DisplayVideos(IList<YoutubePlaylistObject> youtubePlaylistObjects)
 	{
+		GenerateVideoObjects(youtubePlaylistObjects.Count);
+
 		IList<Coroutine> coroutines = new List<Coroutine>();
-		for(int i = 0; i < searchResults; i++)
+		for(int i = 0; i < existingPrefabs.Count; i++)
 		{
-			coroutines.Add(StartCoroutine(ytPrefabs[i].Setup(this, youtubePlaylistObjects[i])));
+			if(i >= youtubePlaylistObjects.Count)
+			{
+				existingPrefabs[i].gameObject.SetActive(false);
+			}
+
+			coroutines.Add(StartCoroutine(existingPrefabs[i].Setup(this, youtubePlaylistObjects[i])));
 		}
 
 		foreach(Coroutine c in coroutines)
@@ -425,12 +462,6 @@ public class Youtube : MonoBehaviour
 		{
 			StartCoroutine(ShowHistory());
 		}
-	}
-
-
-	void Awake()
-	{
-		searchResults = ytPrefabs.Length;
 	}
 
 

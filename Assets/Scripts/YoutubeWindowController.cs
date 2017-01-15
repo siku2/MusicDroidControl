@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
+	public static bool open;
+
 	[SerializeField] RectTransform window;
 	[SerializeField] int canvasSize;
 	[SerializeField] float posMultiplier;
@@ -13,7 +15,6 @@ public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHand
 	[SerializeField] float closePercentage;
 	[SerializeField] float speed;
 
-	bool open;
 	bool blocking;
 
 

@@ -55,6 +55,7 @@ public class Manager : MonoBehaviour
 	[SerializeField] Sprite genericCover;
 	[Header("Debug")]
 	[SerializeField] bool connect;
+	[SerializeField] bool local;
 	[SerializeField] bool clearPerfs;
 
 	WaitForSeconds connectionInterval = new WaitForSeconds(3);
@@ -80,6 +81,8 @@ public class Manager : MonoBehaviour
 
 		if(connect)
 		{
+			SocketClient.localConnect = local;
+
 			loading_screen.gameObject.SetActive(true);
 			main_screen.gameObject.SetActive(false);
 			noPlayerChannel.SetActive(false);
@@ -163,6 +166,11 @@ public class Manager : MonoBehaviour
 				progress_display.fillAmount = ((float) realProgress) / ((float) songInformation.duration);
 			}
 			progress_text.text = string.Format("{0}:{1}", Mathf.Floor(realProgress / 60).ToString("00"), Mathf.Floor(realProgress % 60).ToString("00"));
+		}
+
+		if(Input.GetKeyDown(KeyCode.Escape) && YoutubeWindowController.open)
+		{
+			YoutubeWindowController.open = false;
 		}
 	}
 
