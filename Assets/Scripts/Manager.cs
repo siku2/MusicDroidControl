@@ -119,6 +119,8 @@ public class Manager : MonoBehaviour
 				PlayerPrefs.SetString("server_id", serverID);
 				PlayerPrefs.Save();
 
+				Analytics.CustomEvent("Registered");
+
 				registerScreen.SetActive(false);
 				discord_logo.SetActive(true);
 			}
@@ -490,7 +492,7 @@ public class Manager : MonoBehaviour
 		if(volume_slider.value == vol)
 		{
 			Debug.Log("Sending new volume");
-			Analytics.CustomEvent("Changing Volume", new Dictionary<string, object>() { { "old volume", songInformation.volume }, { "new volume", vol } });
+			Analytics.CustomEvent("Changing Volume", new Dictionary<string, object>() { { "old volume", songInformation.volume }, { "new volume", Math.Round(vol, 2) } });
 			if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";VOLUMECHANGE;" + Math.Round(vol, 2).ToString()) == SocketSendResponse.NOT_CONNECTED)
 			{
 				general_anim.SetTrigger("switch_to_loading");

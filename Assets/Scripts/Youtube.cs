@@ -163,9 +163,21 @@ public class Youtube : MonoBehaviour
 		float duration = (float) XmlConvert.ToTimeSpan(videoInfo["contentDetails"]["duration"].ToString()).TotalSeconds;
 		JToken stats = videoInfo["statistics"];
 		int views = int.Parse(stats["viewCount"].ToString());
-		int likes = int.Parse(stats["likeCount"].ToString());
-		int dislikes = int.Parse(stats["dislikeCount"].ToString());
-		int comments = int.Parse(stats["commentCount"].ToString());
+
+		int likes = 0;
+		int dislikes = 0;
+		int comments = 0;
+
+		try
+		{
+			likes = int.Parse(stats["likeCount"].ToString());
+			dislikes = int.Parse(stats["dislikeCount"].ToString());
+			comments = int.Parse(stats["commentCount"].ToString());
+		}
+		catch
+		{
+			
+		}
 
 		yield return new YoutubeVideoObject(name, channel, desc, vidID, thumbnailUrl, views, duration, likes, dislikes, comments);
 	}

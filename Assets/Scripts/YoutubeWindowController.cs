@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
-	public static bool open;
+	public static bool open = true;
 
 	[SerializeField] RectTransform window;
 	[SerializeField] int canvasSize;
