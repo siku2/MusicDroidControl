@@ -1,0 +1,4 @@
+title: "MusicDroidControl"
+
+short_description: "Application that controls a Discord bot"
+full_description: "This app is probably not for you.\nThis is an application which has the only purpose of controlling a music playing Discord bot."
