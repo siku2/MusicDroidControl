@@ -113,6 +113,7 @@ public class Youtube : MonoBehaviour
 
 	[SerializeField] Manager manager;
 	[SerializeField] Transform ytPrefabParent;
+	[SerializeField] GameObject loading;
 	[SerializeField] InputField searchField;
 	[SerializeField] YoutubeVideoObjectPrefab ytPrefab;
 	[SerializeField] Text currentSearchModeDisplay;
@@ -291,6 +292,18 @@ public class Youtube : MonoBehaviour
 	}
 
 
+	void ShowLoading()
+	{
+		loading.SetActive(true);
+	}
+
+
+	void HideLoading()
+	{
+		loading.SetActive(false);
+	}
+
+
 	IEnumerator SearchForVideos(string query)
 	{
 		if(searchMode == SearchMode.VIDEOS)
@@ -348,6 +361,8 @@ public class Youtube : MonoBehaviour
 
 	public IEnumerator ShowHistory()
 	{
+		ShowLoading();
+
 		IList<YoutubeVideoObject> videos = new List<YoutubeVideoObject>();
 		foreach(string videoID in history)
 		{
@@ -358,29 +373,37 @@ public class Youtube : MonoBehaviour
 
 		if(videos.Count > 0)
 		{
-			StartCoroutine(DisplayVideos(videos));
+			yield return StartCoroutine(DisplayVideos(videos));
 		}
+
+		HideLoading();
 	}
 
 
 	public IEnumerator ShowTrending()
 	{
+		ShowLoading();
+
 		CoroutineWithData cd = new CoroutineWithData(this, GetPopularMusic());
 		yield return cd.coroutine;
 
 		if(searchMode == SearchMode.VIDEOS)
 		{
-			StartCoroutine(DisplayVideos((IList<YoutubeVideoObject>) cd.result));
+			yield return StartCoroutine(DisplayVideos((IList<YoutubeVideoObject>) cd.result));
 		}
 		else
 		{
-			StartCoroutine(DisplayVideos((IList<YoutubePlaylistObject>) cd.result));
+			yield return StartCoroutine(DisplayVideos((IList<YoutubePlaylistObject>) cd.result));
 		}
+
+		HideLoading();
 	}
 
 
 	public IEnumerator SearchEnter()
 	{
+		ShowLoading();
+
 		string currentText = searchField.text;
 		if(currentText.Trim() == "")
 		{
@@ -392,12 +415,14 @@ public class Youtube : MonoBehaviour
 
 		if(searchMode == SearchMode.VIDEOS)
 		{
-			StartCoroutine(DisplayVideos(cd.result as IList<YoutubeVideoObject>));
+			yield return StartCoroutine(DisplayVideos(cd.result as IList<YoutubeVideoObject>));
 		}
 		else
 		{
-			StartCoroutine(DisplayVideos(cd.result as IList<YoutubePlaylistObject>));
+			yield return StartCoroutine(DisplayVideos(cd.result as IList<YoutubePlaylistObject>));
 		}
+
+		HideLoading();
 	}
 
 
@@ -427,9 +452,9 @@ public class Youtube : MonoBehaviour
 			return;
 		}
 
-		focus = Focus.HISTORY;
 		if(history.Count > 0)
 		{
+			focus = Focus.HISTORY;
 			StartCoroutine(ShowHistory());
 		}
 	}

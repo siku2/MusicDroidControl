@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: b54c93263c038da4f92408ef4ccd5df9
-timeCreated: 1483798307
+timeCreated: 1485091218
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
@@ -22,6 +22,12 @@ TextureImporter:
     21300030: musicbotcontrol_spritesheet_15
     21300032: musicbotcontrol_spritesheet_16
     21300034: musicbotcontrol_spritesheet_17
+    21300036: musicbotcontrol_spritesheet_18
+    21300038: musicbotcontrol_spritesheet_19
+    21300040: musicbotcontrol_spritesheet_20
+    21300042: musicbotcontrol_spritesheet_21
+    21300044: musicbotcontrol_spritesheet_22
+    21300046: musicbotcontrol_spritesheet_23
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -69,7 +75,7 @@ TextureImporter:
   textureFormatSet: 0
   platformSettings:
   - buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -77,7 +83,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
   - buildTarget: Standalone
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -85,7 +91,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
   - buildTarget: Android
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -93,7 +99,7 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
   - buildTarget: WebGL
-    maxTextureSize: 2048
+    maxTextureSize: 1024
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
@@ -108,7 +114,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 20
-        y: 290
+        y: 504
         width: 500
         height: 250
       alignment: 0
@@ -121,7 +127,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 559
-        y: 314
+        y: 528
         width: 144
         height: 226
       alignment: 0
@@ -134,7 +140,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 987
-        y: 310
+        y: 524
         width: 127
         height: 230
       alignment: 0
@@ -147,7 +153,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 723
-        y: 310
+        y: 524
         width: 244
         height: 230
       alignment: 0
@@ -160,7 +166,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 20
-        y: 20
+        y: 234
         width: 250
         height: 250
       alignment: 0
@@ -173,7 +179,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 290
-        y: 20
+        y: 234
         width: 250
         height: 250
       alignment: 0
@@ -186,7 +192,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 560
-        y: 44
+        y: 258
         width: 144
         height: 226
       alignment: 0
@@ -199,7 +205,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 724
-        y: 40
+        y: 254
         width: 244
         height: 230
       alignment: 0
@@ -212,7 +218,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 988
-        y: 40
+        y: 254
         width: 127
         height: 230
       alignment: 0
@@ -225,7 +231,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 540
-        y: 290
+        y: 504
         width: 5
         height: 250
       alignment: 0
@@ -238,7 +244,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1134
-        y: 306
+        y: 520
         width: 234
         height: 234
       alignment: 0
@@ -251,7 +257,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1388
-        y: 306
+        y: 520
         width: 234
         height: 234
       alignment: 0
@@ -264,7 +270,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1642
-        y: 308
+        y: 522
         width: 231
         height: 231
       alignment: 0
@@ -277,20 +283,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1135
-        y: 250
-        width: 705
-        height: 19
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 15, y: 8, z: 15, w: 8}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: musicbotcontrol_spritesheet_14
-      rect:
-        serializedVersion: 2
-        x: 1135
-        y: 211
+        y: 464
         width: 705
         height: 19
       alignment: 0
@@ -303,7 +296,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1134
-        y: 60
+        y: 274
         width: 131
         height: 131
       alignment: 0
@@ -316,7 +309,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1285
-        y: 59
+        y: 273
         width: 132
         height: 132
       alignment: 0
@@ -329,12 +322,103 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1437
-        y: 76
+        y: 290
         width: 200
         height: 115
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 20, y: 20, z: 20, w: 20}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_14
+      rect:
+        serializedVersion: 2
+        x: 992
+        y: 207
+        width: 757
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_18
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 20
+        width: 223
+        height: 194
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_19
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 20
+        width: 223
+        height: 194
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_20
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 20
+        width: 223
+        height: 194
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_21
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 20
+        width: 223
+        height: 194
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_22
+      rect:
+        serializedVersion: 2
+        x: 992
+        y: 149
+        width: 789
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_23
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 234
+        width: 190
+        height: 250
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     outline: []
