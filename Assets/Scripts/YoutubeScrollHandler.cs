@@ -57,4 +57,10 @@ public class YoutubeScrollHandler : MonoBehaviour, IDragHandler
 	{
 		Scroll(data.delta.y);
 	}
+
+
+	public void GotoTop()
+	{
+		scrollWindow.anchoredPosition = new Vector2(scrollWindow.anchoredPosition.x, -(scrollWindow.sizeDelta.y / 2));
+	}
 }

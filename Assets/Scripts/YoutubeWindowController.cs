@@ -8,6 +8,7 @@ public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHand
 {
 	public static bool open = true;
 
+	[SerializeField] YoutubeScrollHandler scrollHandler;
 	[SerializeField] RectTransform window;
 	[SerializeField] int canvasSize;
 	[SerializeField] float posMultiplier;
@@ -70,6 +71,7 @@ public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHand
 		{
 //			print("open");
 			open = true;
+			scrollHandler.GotoTop();
 		}
 
 		blocking = false;

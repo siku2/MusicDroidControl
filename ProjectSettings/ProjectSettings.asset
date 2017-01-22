@@ -120,7 +120,7 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.solarsoft.musicdroidcontrol
-  bundleVersion: 3.0.0
+  bundleVersion: 3.0.3
   preloadedAssets:
   - {fileID: 1676351242818620, guid: 6b451469ff2ef69479a09ddf43a28b2a, type: 2}
   metroInputSource: 0
@@ -138,7 +138,7 @@ PlayerSettings:
       depthFormat: 1
   protectGraphicsMemory: 0
   useHDRDisplay: 0
-  AndroidBundleVersionCode: 56
+  AndroidBundleVersionCode: 59
   AndroidMinSdkVersion: 16
   AndroidPreferredInstallLocation: 1
   aotOptions: 

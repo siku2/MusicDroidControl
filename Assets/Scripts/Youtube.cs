@@ -267,6 +267,8 @@ public class Youtube : MonoBehaviour
 		{
 			yield return c;
 		}
+
+		scrollHandler.GotoTop();
 	}
 
 
@@ -289,6 +291,8 @@ public class Youtube : MonoBehaviour
 		{
 			yield return c;
 		}
+
+		scrollHandler.GotoTop();
 	}
 
 
@@ -435,6 +439,8 @@ public class Youtube : MonoBehaviour
 
 	public void SwitchToTrending()
 	{
+		searchField.text = "";
+
 		if(focus == Focus.TRENDING)
 		{
 			return;
@@ -447,6 +453,8 @@ public class Youtube : MonoBehaviour
 
 	public void SwitchToHistory()
 	{
+		searchField.text = "";
+
 		if(focus == Focus.HISTORY)
 		{
 			return;
