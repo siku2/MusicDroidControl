@@ -160,7 +160,7 @@ public class Manager : MonoBehaviour
 			}
 		}
 			
-		if(songInformation.progress < songInformation.duration)
+		if(songInformation.progress < songInformation.duration || songInformation.duration == 0)
 		{
 			float realProgress = (float) songInformation.progress + (((float) progressTimer.ElapsedMilliseconds) / 1000);
 			if(songInformation.duration > 0)
