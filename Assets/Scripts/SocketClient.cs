@@ -89,7 +89,7 @@ public static class SocketClient
 			sending_socket.Receive(bytes);
 			string msg = Encoding.UTF8.GetString(bytes);
 //			Debug.Log(msg);
-			if(msg == "sdown" || msg == "exit" || msg == "")
+			if(msg.StartsWith("sdown") || msg.StartsWith("exit") || msg == "")
 			{
 				Debug.LogWarning("MusicBot ShutDown!");
 				Shutdown();

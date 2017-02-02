@@ -26,6 +26,7 @@ public struct SongInformation
 public class Manager : MonoBehaviour
 {
 	[SerializeField] Youtube youtube;
+	[SerializeField] MessageDisplay msgDisplay;
 	[SerializeField] Transform loading_screen;
 	[SerializeField] Transform main_screen;
 	[SerializeField] GameObject discord_logo;
@@ -156,6 +157,21 @@ public class Manager : MonoBehaviour
 					string oldUrl = songInformation.cover_url;
 					UpdateSongInformation(elements[1].Substring(0, int.Parse(elements[0])));
 					StartCoroutine(UpdateInterface(oldUrl != songInformation.cover_url));
+				}
+				else
+				if(elements[1].StartsWith("MESSAGE")) //xx==MESSAGE;HELLO WORLD!
+				{
+					try
+					{
+						string[] messageParts = elements[1].Substring(0, int.Parse(elements[0])).Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+						string msg = messageParts[1];
+						
+						msgDisplay.DisplayMessage(msg);
+					}
+					catch
+					{
+						Debug.LogWarning("Received malformed MESSAGE");
+					}
 				}
 			}
 		}
