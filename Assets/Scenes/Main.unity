@@ -3872,7 +3872,7 @@ MonoBehaviour:
   skip_normal: {fileID: 21300006, guid: b54c93263c038da4f92408ef4ccd5df9, type: 3}
   genericCover: {fileID: 21300000, guid: 595abed7c004064478d9e63f37ac330a, type: 3}
   connect: 1
-  local: 0
+  local: 1
   clearPerfs: 0
 --- !u!4 &1562026190
 Transform:

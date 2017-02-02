@@ -22,7 +22,7 @@ public class MessageDisplay : MonoBehaviour
 	IEnumerator SetSizeDelta()
 	{
 		yield return null;
-		msgField.sizeDelta = new Vector2(msgField.sizeDelta.x, msgDisplay.rectTransform.sizeDelta.y * 1.1f);
+		msgField.sizeDelta = new Vector2(msgField.sizeDelta.x, Mathf.Max(msgDisplay.rectTransform.sizeDelta.y * 1.3f, 300));
 	}
 
 
