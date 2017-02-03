@@ -17,6 +17,7 @@ public struct RadioStation
 public class RadioPanel : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDragHandler
 {
 	public YoutubeScrollHandler scrollHandler;
+	public bool blocking;
 
 	[SerializeField] Manager manager;
 	[SerializeField] RadioStation[] stations;
@@ -32,7 +33,6 @@ public class RadioPanel : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDr
 
 	List<RadioStationObject> existingObjects = new List<RadioStationObject>();
 	bool open;
-	bool blocking;
 
 
 	public void OnStationClick(int index)
@@ -46,6 +46,7 @@ public class RadioPanel : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDr
 		DisplayRadioStations();
 		gameObject.SetActive(true);
 		open = true;
+		scrollHandler.GotoTop();
 	}
 
 
@@ -105,7 +106,6 @@ public class RadioPanel : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDr
 		else
 		{
 			open = true;
-			scrollHandler.GotoTop();
 		}
 
 		blocking = false;

@@ -5,13 +5,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class RadioStationObject : MonoBehaviour, IPointerUpHandler, IDragHandler, IPointerDownHandler
+public class RadioStationObject : MonoBehaviour, IPointerUpHandler, IDragHandler, IPointerDownHandler, IEndDragHandler, IBeginDragHandler
 {
 	[SerializeField] Text nameDisplay;
 	[SerializeField] Text languageDisplay;
 	[SerializeField] Image logoDisplay;
 	[SerializeField] GameObject overlay;
 	[SerializeField] float scrollThreshold;
+	[SerializeField] float slideThreshold;
 
 	RadioPanel panel;
 	int index;
@@ -55,8 +56,29 @@ public class RadioStationObject : MonoBehaviour, IPointerUpHandler, IDragHandler
 	}
 
 
+	public void OnBeginDrag(PointerEventData data)
+	{
+		panel.blocking = true;
+	}
+
+
 	public void OnDrag(PointerEventData data)
 	{
-		panel.scrollHandler.Scroll(data.delta.y);
+		if(Mathf.Abs(data.delta.x) > slideThreshold && Mathf.Abs(data.delta.y) < scrollThreshold)
+		{
+			panel.OnDrag(data);
+		}
+		else
+		{
+			panel.scrollHandler.Scroll(data.delta.y);
+		}
+	}
+
+
+	public void OnEndDrag(PointerEventData data)
+	{
+		panel.OnEndDrag(data);
+
+		panel.blocking = false;
 	}
 }
