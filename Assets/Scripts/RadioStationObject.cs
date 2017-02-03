@@ -68,7 +68,8 @@ public class RadioStationObject : MonoBehaviour, IPointerUpHandler, IDragHandler
 		{
 			panel.OnDrag(data);
 		}
-		else
+
+		if(panel.open || !panel.blocking)
 		{
 			panel.scrollHandler.Scroll(data.delta.y);
 		}
@@ -78,7 +79,5 @@ public class RadioStationObject : MonoBehaviour, IPointerUpHandler, IDragHandler
 	public void OnEndDrag(PointerEventData data)
 	{
 		panel.OnEndDrag(data);
-
-		panel.blocking = false;
 	}
 }

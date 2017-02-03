@@ -300,6 +300,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollHandler: {fileID: 140057617}
   blocking: 0
+  open: 0
   manager: {fileID: 1562026189}
   stations:
   - logo: {fileID: 21300000, guid: c31ca19cec538f64f8e1c4c579620dfc, type: 3}

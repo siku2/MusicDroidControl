@@ -18,6 +18,7 @@ public class RadioPanel : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDr
 {
 	public YoutubeScrollHandler scrollHandler;
 	public bool blocking;
+	public bool open;
 
 	[SerializeField] Manager manager;
 	[SerializeField] RadioStation[] stations;
@@ -32,7 +33,6 @@ public class RadioPanel : MonoBehaviour, IDragHandler, IEndDragHandler, IBeginDr
 	[SerializeField] float speed;
 
 	List<RadioStationObject> existingObjects = new List<RadioStationObject>();
-	bool open;
 
 
 	public void OnStationClick(int index)

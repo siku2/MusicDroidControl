@@ -430,6 +430,7 @@ public class Manager : MonoBehaviour
 			general_anim.SetTrigger("switch_to_loading");
 			StartCoroutine(Start());
 		}
+//		print("Sent radio command");
 	}
 
 
