@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: b54c93263c038da4f92408ef4ccd5df9
-timeCreated: 1485091218
+timeCreated: 1486063979
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
@@ -28,6 +28,7 @@ TextureImporter:
     21300042: musicbotcontrol_spritesheet_21
     21300044: musicbotcontrol_spritesheet_22
     21300046: musicbotcontrol_spritesheet_23
+    21300048: musicbotcontrol_spritesheet_24
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -99,6 +100,14 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
   - buildTarget: WebGL
+    maxTextureSize: 1024
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: iPhone
     maxTextureSize: 1024
     textureFormat: -1
     textureCompression: 1
@@ -418,6 +427,19 @@ TextureImporter:
         height: 250
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: musicbotcontrol_spritesheet_24
+      rect:
+        serializedVersion: 2
+        x: 1658
+        y: 237
+        width: 85
+        height: 206
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

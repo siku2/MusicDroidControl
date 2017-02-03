@@ -27,6 +27,12 @@ public class YoutubeScrollHandler : MonoBehaviour, IDragHandler
 	}
 
 
+	void Start()
+	{
+		GotoTop();
+	}
+
+
 	void ReallyScroll(float deltaY)
 	{
 		Vector3 newPos = scrollWindow.position + deltaY * Vector3.up;
@@ -59,8 +65,18 @@ public class YoutubeScrollHandler : MonoBehaviour, IDragHandler
 	}
 
 
+	IEnumerator GotoTopNextFrame()
+	{
+		yield return null;
+		scrollWindow.anchoredPosition = new Vector2(scrollWindow.anchoredPosition.x, -(scrollWindow.sizeDelta.y / 4));
+	}
+
+
 	public void GotoTop()
 	{
-		scrollWindow.anchoredPosition = new Vector2(scrollWindow.anchoredPosition.x, -(scrollWindow.sizeDelta.y / 2));
+		if(gameObject.activeInHierarchy)
+		{
+			StartCoroutine(GotoTopNextFrame());
+		}
 	}
 }

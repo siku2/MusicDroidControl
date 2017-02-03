@@ -422,6 +422,17 @@ public class Manager : MonoBehaviour
 	}
 
 
+	public void RadioPlayCommand(string name)
+	{
+		Analytics.CustomEvent("Playing Radio", new Dictionary<string, object>() { { "name", name } });
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";RADIO;" + name) == SocketSendResponse.NOT_CONNECTED)
+		{
+			general_anim.SetTrigger("switch_to_loading");
+			StartCoroutine(Start());
+		}
+	}
+
+
 	public void RightPadPress()
 	{
 		Analytics.CustomEvent("Skipping", new Dictionary<string, object>() { { "song", songInformation.song_name }, { "artist", songInformation.artist } });

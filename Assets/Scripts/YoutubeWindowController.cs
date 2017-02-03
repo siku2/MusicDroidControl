@@ -31,6 +31,7 @@ public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHand
 			if(!open && window.offsetMin.y < canvasSize)
 			{
 				window.offsetMin = new Vector2(0, Mathf.Clamp(window.offsetMin.y + speed, 0, canvasSize));
+				scrollHandler.GotoTop();
 			}
 
 			if(!open && window.offsetMin.y == canvasSize)
@@ -71,7 +72,6 @@ public class YoutubeWindowController : MonoBehaviour, IDragHandler, IEndDragHand
 		{
 //			print("open");
 			open = true;
-			scrollHandler.GotoTop();
 		}
 
 		blocking = false;
