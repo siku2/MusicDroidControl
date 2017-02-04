@@ -9,7 +9,7 @@ PlayerSettings:
   defaultScreenOrientation: 4
   targetDevice: 2
   useOnDemandResources: 0
-  accelerometerFrequency: 60
+  accelerometerFrequency: 15
   companyName: SolarSoft
   productName: MusicDroidControl
   defaultCursor: {fileID: 0}
@@ -120,7 +120,7 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.solarsoft.musicdroidcontrol
-  bundleVersion: 3.1.3
+  bundleVersion: 3.1.6
   preloadedAssets:
   - {fileID: 1676351242818620, guid: 6b451469ff2ef69479a09ddf43a28b2a, type: 2}
   metroInputSource: 0
@@ -138,7 +138,7 @@ PlayerSettings:
       depthFormat: 1
   protectGraphicsMemory: 0
   useHDRDisplay: 0
-  AndroidBundleVersionCode: 67
+  AndroidBundleVersionCode: 71
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -146,7 +146,7 @@ PlayerSettings:
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
-  iPhoneBuildNumber: 67
+  iPhoneBuildNumber: 71
   ForceInternetPermission: 1
   ForceSDCardPermission: 0
   CreateWallpaper: 0
@@ -259,9 +259,9 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
-  locationUsageDescription: 
-  microphoneUsageDescription: 
+  cameraUsageDescription: Not used at all
+  locationUsageDescription: Not used at all
+  microphoneUsageDescription: Not used at all
   switchNetLibKey: 
   switchSocketMemoryPoolSize: 6144
   switchSocketAllocatorPoolSize: 128
