@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.UI;
@@ -21,6 +22,40 @@ public struct SongInformation
 	public float volume;
 }
 
+
+public struct PlaylistInformation
+{
+	public string name;
+	public string author;
+	public int replays;
+	public int duration;
+	public int entries;
+
+
+	public string beautifiedName {
+		get
+		{
+			TextInfo textInfo = new CultureInfo("en-GB", false).TextInfo;
+			return textInfo.ToTitleCase(name.Replace("_", " "));
+		}
+	}
+
+
+	public PlaylistInformation(string name, string author, int replays, int duration, int entries)
+	{
+		this.name = name;
+		this.author = author;
+		this.replays = replays;
+		this.duration = duration;
+		this.entries = entries;
+	}
+
+
+	public override string ToString()
+	{
+		return string.Format("[{0} by {1}] {2} times played, {3} entries and {4} seconds long", beautifiedName, author, replays, entries, duration);
+	}
+}
 
 
 public class Manager : MonoBehaviour
@@ -59,6 +94,7 @@ public class Manager : MonoBehaviour
 	[SerializeField] bool local;
 	[SerializeField] bool clearPerfs;
 
+	List<PlaylistInformation> playlists = new List<PlaylistInformation>();
 	WaitForSeconds connectionInterval = new WaitForSeconds(3);
 	WaitForSeconds checkAnswerInterval = new WaitForSeconds(2);
 	WaitForSeconds volumeChangeDelay = new WaitForSeconds(.6f);
@@ -141,6 +177,7 @@ public class Manager : MonoBehaviour
 		}
 
 		youtube.Init();
+		RequestPlaylists();
 	}
 
 
@@ -311,10 +348,22 @@ public class Manager : MonoBehaviour
 	}
 
 
+	void RequestPlaylists()
+	{
+		SocketClient.Send("REQUEST;" + serverID + ";" + authorID + ";SEND_PLAYLISTS");
+	}
+
+
 	bool UpdateSongInformation(string msg)
 	{
 
 		string[] elements = msg.Split(new char[] { ';' });
+
+		if(elements[1] == "PLAYLISTS")
+		{
+			return UpdatePlaylists(msg);
+		}
+
 		if(elements[0] == "INFORMATION")
 		{
 			try
@@ -352,6 +401,45 @@ public class Manager : MonoBehaviour
 			{
 				Debug.LogWarning("Malformatted information code: " + msg);
 				Analytics.CustomEvent("Received malformed data");
+				return false;
+			}
+		}
+
+		return false;
+	}
+
+
+	bool UpdatePlaylists(string msg)
+	{
+		string[] elements = msg.Split(new char[] { ';' });
+		if(elements[0] == "INFORMATION" && elements[1] == "PLAYLISTS")
+		{
+			try
+			{
+				int playlistCount = int.Parse(elements[2]);
+
+				for(int i = 0; i < playlistCount; i++)
+				{
+					int indexOffset = 3 + i * 5;
+					string name = elements[indexOffset + 0];
+					string author = elements[indexOffset + 1];
+					int replayCount = int.Parse(elements[indexOffset + 2]);
+					int entryCount = int.Parse(elements[indexOffset + 3]);
+					int duration = int.Parse(elements[indexOffset + 4]);
+
+					PlaylistInformation playlist = new PlaylistInformation(name, author, replayCount, duration, entryCount);
+					if(!playlists.Exists(new Predicate<PlaylistInformation>(x => x.name == playlist.name)))
+					{
+						playlists.Add(playlist);
+					}
+				}
+//				playlists.ForEach(new Action<PlaylistInformation>(x => print(x)));
+				return true;
+			}
+			catch
+			{
+				Debug.LogWarning("Malformatted playlists code: " + msg);
+				Analytics.CustomEvent("Received malformed pl data");
 				return false;
 			}
 		}
@@ -411,7 +499,7 @@ public class Manager : MonoBehaviour
 	}
 
 
-	public void PlaylistPlayCommand(YoutubePlaylistObject pl)
+	public void YoutubePlaylistPlayCommand(YoutubePlaylistObject pl)
 	{
 		Analytics.CustomEvent("Playing Playlist", new Dictionary<string, object>() { { "name", pl.name }, { "channel", pl.channel }, { "id", pl.playlistID } });
 		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";PLAY;" + "https://www.youtube.com/playlist?list=" + pl.playlistID) == SocketSendResponse.NOT_CONNECTED)
@@ -431,6 +519,17 @@ public class Manager : MonoBehaviour
 			StartCoroutine(Start());
 		}
 //		print("Sent radio command");
+	}
+
+
+	public void PlaylistPlayCommand(string name)
+	{
+		Analytics.CustomEvent("Playing Playlist", new Dictionary<string, object>() { { "name", name } });
+		if(SocketClient.Send("COMMAND;" + serverID + ";" + authorID + ";PLAYLIST;" + name) == SocketSendResponse.NOT_CONNECTED)
+		{
+			general_anim.SetTrigger("switch_to_loading");
+			StartCoroutine(Start());
+		}
 	}
 
 

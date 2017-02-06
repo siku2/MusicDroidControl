@@ -120,7 +120,7 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.solarsoft.musicdroidcontrol
-  bundleVersion: 3.1.6
+  bundleVersion: 3.1.7
   preloadedAssets:
   - {fileID: 1676351242818620, guid: 6b451469ff2ef69479a09ddf43a28b2a, type: 2}
   metroInputSource: 0
@@ -138,7 +138,7 @@ PlayerSettings:
       depthFormat: 1
   protectGraphicsMemory: 0
   useHDRDisplay: 0
-  AndroidBundleVersionCode: 71
+  AndroidBundleVersionCode: 72
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -146,7 +146,7 @@ PlayerSettings:
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
-  iPhoneBuildNumber: 71
+  iPhoneBuildNumber: 72
   ForceInternetPermission: 1
   ForceSDCardPermission: 0
   CreateWallpaper: 0

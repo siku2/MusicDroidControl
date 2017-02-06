@@ -191,7 +191,7 @@ MonoBehaviour:
   logoDisplay: {fileID: 114582116175145828}
   overlay: {fileID: 1128677001495862}
   scrollThreshold: 3
-  slideThreshold: 3.5
+  slideThreshold: 0.1
 --- !u!114 &114489302725808942
 MonoBehaviour:
   m_ObjectHideFlags: 1

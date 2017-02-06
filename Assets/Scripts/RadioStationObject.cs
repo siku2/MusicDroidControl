@@ -64,7 +64,7 @@ public class RadioStationObject : MonoBehaviour, IPointerUpHandler, IDragHandler
 
 	public void OnDrag(PointerEventData data)
 	{
-		if(Mathf.Abs(data.delta.x) > slideThreshold && Mathf.Abs(data.delta.y) < scrollThreshold)
+		if(Mathf.Abs(data.delta.x) > slideThreshold)
 		{
 			panel.OnDrag(data);
 		}

@@ -359,7 +359,7 @@ public class Youtube : MonoBehaviour
 
 	public void PlayPlaylist(YoutubePlaylistObject pl)
 	{
-		manager.PlaylistPlayCommand(pl);
+		manager.YoutubePlaylistPlayCommand(pl);
 	}
 
 
