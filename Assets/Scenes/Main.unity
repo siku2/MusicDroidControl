@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 6
+    serializedVersion: 7
     m_Resolution: 2
     m_BakeResolution: 40
     m_TextureWidth: 1024
@@ -72,8 +72,20 @@ LightmapSettings:
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_StationaryBakeMode: 3
+    m_BakeBackend: 0
+    m_PVRSampling: 1
+    m_PVRSampleCount: 500
+    m_PVRBounces: 2
+    m_PVRFiltering: 0
+    m_PVRFilteringMode: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 5
+    m_PVRFilteringGaussRadiusAO: 2
+    m_PVRFilteringAtrousColorSigma: 1
+    m_PVRFilteringAtrousNormalSigma: 1
+    m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
-  m_RuntimeCPUUsage: 25
   m_ShadowMaskMode: 2
 --- !u!196 &4
 NavMeshSettings:
@@ -4484,7 +4496,7 @@ MonoBehaviour:
   skip_normal: {fileID: 21300006, guid: b54c93263c038da4f92408ef4ccd5df9, type: 3}
   genericCover: {fileID: 21300000, guid: 595abed7c004064478d9e63f37ac330a, type: 3}
   connect: 1
-  local: 1
+  local: 0
   clearPerfs: 0
 --- !u!4 &1562026190
 Transform:
