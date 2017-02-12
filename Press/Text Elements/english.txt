@@ -1,4 +1,0 @@
-title: "MusicDroidControl"
-
-short_description: "A small app which allows you to take control over a Discord MusicBot."
-full_description: "This application is more or less just a remote control for a music playing Discord bot.\nIt allows you to pause, skip and change volume but also features a youtube browser where you can search for music and play it!"

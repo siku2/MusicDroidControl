@@ -341,7 +341,7 @@ MonoBehaviour:
   posMultiplier: 0
   openPercentage: 0.3
   closePercentage: 0.3
-  speed: 100
+  speed: 35
 --- !u!1 &213766424
 GameObject:
   m_ObjectHideFlags: 0
